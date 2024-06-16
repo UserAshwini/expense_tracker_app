@@ -3,20 +3,20 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class MyChart extends StatefulWidget {
-  const MyChart({super.key});
+class DateChart extends StatefulWidget {
+  const DateChart({super.key});
 
   @override
-  State<MyChart> createState() => _MyChartState();
+  State<DateChart> createState() => _DateChartState();
 }
 
-class _MyChartState extends State<MyChart> {
+class _DateChartState extends State<DateChart> {
   @override
   Widget build(BuildContext context) {
-    return BarChart(mainBarData());
+    return BarChart(dateBarData());
   }
 
-  BarChartData mainBarData() {
+  BarChartData dateBarData() {
     return BarChartData(
         titlesData: FlTitlesData(
             show: true,
