@@ -55,18 +55,17 @@ class _StatsScreenState extends State<StatsScreen> {
 
     for (var expense in dailyExpenses) {
       totalAmount += expense.amount;
-      if (categoryAmountMap.containsKey(expense.category.name)) {
-        categoryAmountMap[expense.category.name] =
-            categoryAmountMap[expense.category.name]! + expense.amount;
+      if (categoryAmountMap.containsKey(expense.category.icon)) {
+        categoryAmountMap[expense.category.icon] =
+            categoryAmountMap[expense.category.icon]! + expense.amount;
       } else {
-        categoryAmountMap[expense.category.name] = expense.amount;
+        categoryAmountMap[expense.category.icon] = expense.amount;
       }
     }
 
-    // Convert amounts to percentages
     final categoryPercentageMap = <String, double>{};
-    categoryAmountMap.forEach((categoryName, amount) {
-      categoryPercentageMap[categoryName] = (amount / totalAmount) * 100;
+    categoryAmountMap.forEach((icon, amount) {
+      categoryPercentageMap[icon] = (amount / totalAmount) * 100;
     });
 
     return categoryPercentageMap;
@@ -129,7 +128,8 @@ class _StatsScreenState extends State<StatsScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20)),
                         child: const Padding(
-                          padding: EdgeInsets.fromLTRB(12, 20, 12, 12),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 30),
                           child: DateChart(),
                         ),
                       ),
@@ -142,7 +142,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   child: Visibility(
                     visible: _showLeftArrow,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back),
+                      icon: Icon(Icons.arrow_back_ios_new_rounded),
                       onPressed: () {
                         _scrollController.animateTo(
                           _scrollController.position.pixels -
@@ -160,7 +160,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   child: Visibility(
                     visible: _showRightArrow,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_forward),
+                      icon: Icon(Icons.arrow_forward_ios_rounded),
                       onPressed: () {
                         _scrollController.animateTo(
                           _scrollController.position.pixels +
@@ -178,7 +178,7 @@ class _StatsScreenState extends State<StatsScreen> {
               height: 20,
             ),
             Text(
-              'Transaction Weekly Details',
+              'Transaction Daily Details',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,

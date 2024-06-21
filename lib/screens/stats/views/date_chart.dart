@@ -1,5 +1,4 @@
 import 'dart:math';
-// import 'package:expense_tracker_app/models/transaction.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -156,11 +155,11 @@ class _DateChartState extends State<DateChart> {
   List<BarChartGroupData> showingGroups() => List.generate(8, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, 2);
+            return makeGroupData(0, 3);
           case 1:
             return makeGroupData(1, 3);
           case 2:
-            return makeGroupData(2, 2);
+            return makeGroupData(2, 4);
           case 3:
             return makeGroupData(3, 4.5);
           case 4:
@@ -176,77 +175,3 @@ class _DateChartState extends State<DateChart> {
         }
       });
 }
-// class MyChart extends StatefulWidget {
-//   final List<Transaction> transactions;
-
-//   const MyChart({super.key, required this.transactions});
-
-//   @override
-//   State<MyChart> createState() => _MyChartState();
-// }
-
-// class _MyChartState extends State<MyChart> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BarChart(mainBarData());
-//   }
-
-//   BarChartData mainBarData() {
-//     return BarChartData(
-//       titlesData: FlTitlesData(
-//         show: true,
-//         rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-//         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-//         bottomTitles: AxisTitles(
-//           sideTitles: SideTitles(
-//             showTitles: true,
-//             reservedSize: 38,
-//             getTitlesWidget: (double value) {
-//               // Customize how bottom titles are generated based on your data
-//               return widget.transactions[value.toInt()].name.substring(0, 2);
-//             },
-//           ),
-//         ),
-//         leftTitles: const AxisTitles(
-//                 sideTitles: SideTitles(
-//                     showTitles: true,
-//                     reservedSize: 38,))
-//       ),
-//       borderData: FlBorderData(show: false),
-//       gridData: const FlGridData(show: false),
-//       barGroups: showingGroups(),
-//     );
-//   }
-
-//   List<BarChartGroupData> showingGroups() {
-//     List<BarChartGroupData> data = [];
-    
-//     // Example: Group data based on transactions
-//     for (int i = 0; i < widget.transactions.length; i++) {
-//       data.add(makeGroupData(i, widget.transactions[i].amount.toDouble()));
-//     }
-    
-//     return data;
-//   }
-
-//   BarChartGroupData makeGroupData(int x, double y) {
-//     return BarChartGroupData(
-//       x: x,
-//       barRods: [
-//         BarChartRodData(toY: y,
-//           gradient: LinearGradient(
-//             colors: [
-//               Theme.of(context).colorScheme.primary,
-//               Theme.of(context).colorScheme.secondary,
-//               Theme.of(context).colorScheme.tertiary,
-//             ],
-//             transform: const GradientRotation(pi / 8),
-//           ),
-//           width: 10,
-//           backDrawRodData: BackgroundBarChartRodData(
-//               show: true, toY: 5, color: Colors.grey.shade300))
-        
-//       ],
-//     );
-//   }
-// }

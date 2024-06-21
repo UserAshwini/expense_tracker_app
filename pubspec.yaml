@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  app_settings: ^5.1.1
   bloc: ^8.1.4
   cloud_firestore: ^5.0.0
   cupertino_icons: ^1.0.6
@@ -35,11 +36,13 @@ dependencies:
   equatable: ^2.0.5
   firebase_auth: ^5.0.0
   firebase_core: ^3.0.0
+  firebase_messaging: ^15.0.1
   fl_chart: ^0.68.0
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.5
   flutter_colorpicker: ^1.1.0
+  flutter_local_notifications: ^17.1.2
   font_awesome_flutter: ^10.7.0
   intl: ^0.19.0
   toggle_switch: ^2.3.0
@@ -62,7 +65,6 @@ flutter:
   assets:
     - assets/income/
     - assets/expenses/
-
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -13,6 +13,7 @@ import 'package:expense_tracker_app/bloc/get_income/get_income_bloc.dart';
 import 'package:expense_tracker_app/bloc/get_incometype/get_incometype_bloc.dart';
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:expense_tracker_app/models/income.dart';
+import 'package:expense_tracker_app/notification_services.dart';
 import 'package:expense_tracker_app/repoitories/firebase_expense_repo.dart';
 import 'package:expense_tracker_app/screens/add/views/add_screen.dart';
 import 'package:expense_tracker_app/screens/home/views/main_screen.dart';
@@ -31,6 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
   late Color selectedItem = Theme.of(context).colorScheme.primary;
   Color unselectedItem = Colors.grey;
+
+  NotificationServices notificationServices = NotificationServices();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    // notificationServices.isTokenRefresh();
+    notificationServices.getDeviceToken().then((value) {
+      print("device token $value");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -78,7 +78,7 @@ class _CategoryChartState extends State<CategoryChart> {
         return Colors.green;
       case 'pet':
         return Colors.indigo;
-      case 'entertainment ':
+      case 'entertainment':
         return Colors.orange;
       case 'tech':
         return Colors.purple;
