@@ -51,7 +51,6 @@ class _AddScreenState extends State<AddScreen> {
                   setState(() {
                     currentIndex = index!;
                   });
-                  print('switched to: $index');
                 },
               ),
             ),
@@ -59,7 +58,7 @@ class _AddScreenState extends State<AddScreen> {
           Expanded(
               child: IndexedStack(
             index: currentIndex,
-            children: [
+            children: const [
               AddIncomeScreen(),
               AddExpenseScreen(),
             ],

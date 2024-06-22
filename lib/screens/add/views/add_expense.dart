@@ -8,7 +8,6 @@ import 'package:expense_tracker_app/models/caregory.dart';
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:expense_tracker_app/screens/add/widgets/category_creation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -43,7 +42,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       listener: (context, state) {
         if (state is CreateExpenseSuccess) {
           Navigator.pop(context, expense);
-          print("actual expense $expense");
         } else if (state is CreateExpenseLoading) {
           setState(() {
             isLoading = true;

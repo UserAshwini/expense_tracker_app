@@ -73,7 +73,7 @@ class _CategoryChartState extends State<CategoryChart> {
       case 'food':
         return Colors.blue;
       case 'shopping':
-        return Colors.yellow;
+        return const Color.fromARGB(255, 218, 199, 29);
       case 'travel':
         return Colors.green;
       case 'pet':

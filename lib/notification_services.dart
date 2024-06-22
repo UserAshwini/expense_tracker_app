@@ -18,14 +18,14 @@ class NotificationServices {
       provisional: true,
       sound: true,
     );
-    print("Notification authorization status: ${settings.authorizationStatus}");
+    // print("Notification authorization status: ${settings.authorizationStatus}");
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print("user granted permission");
+      // print("user granted permission");
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print("user granted provisional permission");
+      // print("user granted provisional permission");
     } else {
-      print("user denied permission");
+      // print("user denied permission");
     }
   }
 
@@ -44,11 +44,11 @@ class NotificationServices {
     FirebaseMessaging.onMessage.listen((message) {
       initLocalNotifications(context, message);
       showNotification(message);
-      print(message.notification!.title.toString());
-      print(message.notification!.body.toString());
-      print(message.data.toString());
-      print(message.data['type']);
-      print(message.data['id']);
+      // print(message.notification!.title.toString());
+      // print(message.notification!.body.toString());
+      // print(message.data.toString());
+      // print(message.data['type']);
+      // print(message.data['id']);
     });
   }
 
@@ -89,7 +89,6 @@ class NotificationServices {
   void isTokenRefresh() async {
     messaging.onTokenRefresh.listen((event) {
       event.toString();
-      print("refresh");
     });
   }
 }

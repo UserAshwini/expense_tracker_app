@@ -18,6 +18,7 @@ class _StatsScreenState extends State<StatsScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showLeftArrow = false;
   bool _showRightArrow = true;
+  bool _isDailyView = true;
 
   @override
   void initState() {
@@ -30,6 +31,9 @@ class _StatsScreenState extends State<StatsScreen> {
       _showLeftArrow = _scrollController.position.pixels > 0;
       _showRightArrow = _scrollController.position.pixels <
           _scrollController.position.maxScrollExtent;
+
+      _isDailyView = _scrollController.position.pixels <
+          MediaQuery.of(context).size.width / 2;
     });
   }
 
@@ -48,12 +52,23 @@ class _StatsScreenState extends State<StatsScreen> {
     }).toList();
   }
 
-  Map<String, double> _calculateCategoryPercentages(
-      List<Expense> dailyExpenses) {
+  List<Expense> _calculateWeeklyExpenses(List<Expense> expenses) {
+    final today = DateTime.now();
+    final startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+
+    return expenses.where((expense) {
+      return expense.date
+              .isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
+          expense.date.isBefore(endOfWeek.add(const Duration(days: 1)));
+    }).toList();
+  }
+
+  Map<String, double> _calculateCategoryPercentages(List<Expense> expenses) {
     final categoryAmountMap = <String, int>{};
     double totalAmount = 0;
 
-    for (var expense in dailyExpenses) {
+    for (var expense in expenses) {
       totalAmount += expense.amount;
       if (categoryAmountMap.containsKey(expense.category.icon)) {
         categoryAmountMap[expense.category.icon] =
@@ -75,12 +90,29 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     final expenseState = context.watch<GetExpensesBloc>().state;
     List<Expense> dailyExpenses = [];
+    List<Expense> weeklyExpenses = [];
 
     if (expenseState is GetExpensesSuccess) {
       dailyExpenses = _calculateDailyExpenses(expenseState.expenses);
+      weeklyExpenses = _calculateWeeklyExpenses(expenseState.expenses);
     }
 
-    final categoryPercentages = _calculateCategoryPercentages(dailyExpenses);
+    final dailyCategoryPercentages =
+        _calculateCategoryPercentages(dailyExpenses);
+    // final weeklyCategoryPercentages =
+    //     _calculateCategoryPercentages(weeklyExpenses);
+
+    final Map<String, int> dailyTotals = {};
+    for (var expense in weeklyExpenses) {
+      String date =
+          "${expense.date.day}-${expense.date.month}-${expense.date.year}";
+      if (dailyTotals.containsKey(date)) {
+        dailyTotals[date] = dailyTotals[date]! + expense.amount;
+      } else {
+        dailyTotals[date] = expense.amount;
+      }
+    }
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
@@ -96,6 +128,19 @@ class _StatsScreenState extends State<StatsScreen> {
               ),
             ),
             const SizedBox(
+              height: 10,
+            ),
+            Text(
+              _isDailyView
+                  ? 'Today\'s Expense chart >'
+                  : '< Weekly Expense chart',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(
               height: 20,
             ),
             Stack(
@@ -107,14 +152,14 @@ class _StatsScreenState extends State<StatsScreen> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.16,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(30)),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 70),
                           child: CategoryChart(
-                            categoryPercentages: categoryPercentages,
+                            categoryPercentages: dailyCategoryPercentages,
                           ),
                         ),
                       ),
@@ -123,31 +168,33 @@ class _StatsScreenState extends State<StatsScreen> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.16,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 30),
-                          child: DateChart(),
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 70, bottom: 40, left: 90, right: 10),
+                          child: DateChart(
+                            weeklyExpenses: weeklyExpenses,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Positioned(
-                  left: 0,
-                  top: MediaQuery.of(context).size.width / 2 - 20,
+                  left: -10,
+                  top: MediaQuery.of(context).size.width / 2 - 50,
                   child: Visibility(
                     visible: _showLeftArrow,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios_new_rounded),
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
                       onPressed: () {
                         _scrollController.animateTo(
                           _scrollController.position.pixels -
                               MediaQuery.of(context).size.width,
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
                       },
@@ -155,17 +202,17 @@ class _StatsScreenState extends State<StatsScreen> {
                   ),
                 ),
                 Positioned(
-                  right: 0,
-                  top: MediaQuery.of(context).size.width / 2 - 20,
+                  right: -10,
+                  top: MediaQuery.of(context).size.width / 2 - 50,
                   child: Visibility(
                     visible: _showRightArrow,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                      icon: const Icon(Icons.arrow_forward_ios_rounded),
                       onPressed: () {
                         _scrollController.animateTo(
                           _scrollController.position.pixels +
                               MediaQuery.of(context).size.width,
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
                       },
@@ -178,7 +225,9 @@ class _StatsScreenState extends State<StatsScreen> {
               height: 20,
             ),
             Text(
-              'Transaction Daily Details',
+              _isDailyView
+                  ? 'Transaction Daily Details'
+                  : 'Transaction Weekly Details',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
@@ -186,34 +235,111 @@ class _StatsScreenState extends State<StatsScreen> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: categoryPercentages.length,
-                itemBuilder: (context, index) {
-                  final categoryName =
-                      categoryPercentages.keys.elementAt(index);
-                  final percentage = categoryPercentages[categoryName]!;
-                  return Card(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: Icon(
-                        FontAwesomeIcons.cloud,
-                        color: color(categoryName),
-                      ),
-                      title: Text(
-                        '$categoryName: ${percentage.toStringAsFixed(2)}%',
-                        style: TextStyle(
-                            color: color(categoryName),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
+            _isDailyView
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: dailyCategoryPercentages.length,
+                      itemBuilder: (context, index) {
+                        final categoryName =
+                            dailyCategoryPercentages.keys.elementAt(index);
+                        final percentage =
+                            dailyCategoryPercentages[categoryName]!;
+                        return Card(
+                          color: Colors.white,
+                          child: ListTile(
+                            leading: Icon(
+                              FontAwesomeIcons.cloud,
+                              color: color(categoryName),
+                            ),
+                            title: Text(
+                              '$categoryName: ${percentage.toStringAsFixed(2)}%',
+                              style: TextStyle(
+                                  color: color(categoryName),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: dailyTotals.length,
+                      itemBuilder: (context, index) {
+                        final date = dailyTotals.keys.elementAt(index);
+                        final total = dailyTotals[date]!;
+
+                        final Map<String, double> categoryTotalsForDate = {};
+                        weeklyExpenses.forEach((expense) {
+                          final expenseDate =
+                              "${expense.date.day}-${expense.date.month}-${expense.date.year}";
+                          if (expenseDate == date) {
+                            if (categoryTotalsForDate
+                                .containsKey(expense.category.icon)) {
+                              categoryTotalsForDate[expense.category.icon] =
+                                  (categoryTotalsForDate[
+                                              expense.category.icon] ??
+                                          0) +
+                                      expense.amount;
+                            } else {
+                              categoryTotalsForDate[expense.category.icon] =
+                                  expense.amount.toDouble();
+                            }
+                          }
+                        });
+
+                        return Card(
+                          color: Colors.white,
+                          child: ExpansionTile(
+                            expandedAlignment: Alignment.bottomLeft,
+                            title: Text(
+                              'Date: $date',
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'Total: ₹${total.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: categoryTotalsForDate.keys
+                                      .map((categoryName) {
+                                    final amount =
+                                        categoryTotalsForDate[categoryName]!;
+                                    return Text(
+                                      '$categoryName: ₹${amount.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        color: color(categoryName),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),
@@ -225,7 +351,7 @@ class _StatsScreenState extends State<StatsScreen> {
       case 'food':
         return Colors.blue;
       case 'shopping':
-        return Colors.yellow;
+        return const Color.fromARGB(255, 197, 178, 16);
       case 'travel':
         return Colors.green;
       case 'pet':

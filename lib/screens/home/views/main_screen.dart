@@ -366,7 +366,6 @@ class _MainScreenState extends State<MainScreen> {
     List<Transaction> transactions = [];
 
     for (var expense in expenses) {
-      print({"expense": expense.category.name});
       transactions.add(Transaction(
         amount: expense.amount,
         date: expense.date,
@@ -378,7 +377,6 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     for (var inc in income) {
-      print({"income": inc.incomeType.name});
       transactions.add(Transaction(
         amount: inc.amount,
         date: inc.date,
@@ -389,8 +387,7 @@ class _MainScreenState extends State<MainScreen> {
       ));
     }
 
-    transactions.sort((a, b) => b.date.compareTo(a.date)); // Sort by date
-    // print({"transactions": transactions[0].name});
+    transactions.sort((a, b) => b.date.compareTo(a.date));
     if (filter == 'Expense') {
       return transactions
           .where((transaction) => transaction.type == 'expense')

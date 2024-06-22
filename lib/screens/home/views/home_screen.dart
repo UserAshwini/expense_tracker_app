@@ -41,23 +41,17 @@ class _HomeScreenState extends State<HomeScreen> {
     notificationServices.requestNotificationPermission();
     notificationServices.firebaseInit(context);
     // notificationServices.isTokenRefresh();
-    notificationServices.getDeviceToken().then((value) {
-      print("device token $value");
-    });
+    notificationServices.getDeviceToken().then((value) {});
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GetIncomeBloc, GetIncomeState>(
       builder: (context, incomeState) {
-        print("6");
         return BlocBuilder<GetExpensesBloc, GetExpensesState>(
             builder: (context, expenseState) {
-          print("7");
           if (expenseState is GetExpensesSuccess &&
               incomeState is GetIncomeSuccess) {
-            print("8");
-            print({"results1234": incomeState.income});
             return Scaffold(
                 bottomNavigationBar: ClipRRect(
                   borderRadius:
@@ -118,31 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     );
-                    print("1");
-                    if (result is Income) {
-                      print("2");
-                      context.read<GetIncomeBloc>().add(GetIncome());
-                      print("3");
-                    } else if (result is Expense) {
-                      print("4");
-                      context.read<GetExpensesBloc>().add(GetExpenses());
-                      print("5");
-                    }
-                    // print({"resultsincfexp": incomeState.income});
-                    // print({"results321": expenseState.expenses});
 
-                    // if (result is Expense) {
-                    //   print({"resultsbfexp": result});
-                    //   setState(() {
-                    //     localExpenses.insert(0, result);
-                    //   });
-                    // } else if (result is Income) {
-                    //   print({"resultsbfin": incomeState.income});
-                    //   setState(() {
-                    //     localIncome.insert(0, result);
-                    //   });
-                    //   print({"resultsaginc": incomeState.income});
-                    // }
+                    if (result is Income) {
+                      context.read<GetIncomeBloc>().add(GetIncome());
+                    } else if (result is Expense) {
+                      context.read<GetExpensesBloc>().add(GetExpenses());
+                    }
                   },
                   shape: const CircleBorder(),
                   child: Container(
@@ -168,10 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     : const StatsScreen());
           } else {
-            print("9");
             return const Scaffold(
               body: Center(
-                child: Text("data"),
+                child: CircularProgressIndicator(),
               ),
             );
           }

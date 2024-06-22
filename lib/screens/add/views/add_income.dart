@@ -4,7 +4,6 @@ import 'package:expense_tracker_app/models/income.dart';
 import 'package:expense_tracker_app/models/incometype.dart';
 import 'package:expense_tracker_app/screens/add/widgets/incometype_creation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +38,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       listener: (context, state) {
         if (state is CreateIncomeSuccess) {
           Navigator.pop(context, income);
-          print("actual income $income");
         } else if (state is CreateIncomeLoading) {
           setState(() {
             isLoading = true;
@@ -227,7 +225,6 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(12))),
                                         onPressed: () {
-                                          print(" add income");
                                           setState(() {
                                             income.amount = int.parse(
                                                 incomeController.text);

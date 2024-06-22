@@ -43,8 +43,8 @@ class Category {
     );
   }
 
-  @override
-  String toString() {
-    return 'Category: {name: $name}';
-  }
+  // @override
+  // String toString() {
+  //   return 'Category: {name: $name}';
+  // }
 }
