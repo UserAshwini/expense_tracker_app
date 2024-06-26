@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import 'package:expense_tracker_app/bloc/auth_bloc/auth_bloc_bloc.dart';
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:expense_tracker_app/models/income.dart';
 import 'package:expense_tracker_app/models/transaction.dart';
+import 'package:expense_tracker_app/screens/authentications/views/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class MainScreen extends StatefulWidget {
@@ -93,9 +97,34 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.settings)))
+                  alignment: Alignment.topRight,
+                  child: PopupMenuButton<int>(
+                    icon: const Icon(Icons.settings),
+                    onSelected: (int result) {
+                      // Handle the selected option
+                      switch (result) {
+                        case 0:
+                          print('Log Out');
+                          break;
+                        // Add more cases as needed
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<int>>[
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: GestureDetector(
+                          child: const Text('Log Out'),
+                          onTap: () =>
+                              BlocProvider.of<AuthenticationBloc>(context).add(
+                            AuthenticationExited(),
+                          ),
+                        ),
+                      ),
+                      // Add more PopupMenuItems as needed
+                    ],
+                  ),
+                )
               ],
             ),
             const SizedBox(

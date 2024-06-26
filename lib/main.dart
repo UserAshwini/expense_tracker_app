@@ -1,9 +1,21 @@
 import 'package:expense_tracker_app/app_view.dart';
+import 'package:expense_tracker_app/bloc/auth_bloc/auth_bloc_bloc.dart';
+import 'package:expense_tracker_app/bloc/get_expense/get_expense_bloc.dart';
+import 'package:expense_tracker_app/bloc/get_expense/get_expense_event.dart';
+import 'package:expense_tracker_app/bloc/get_income/get_income_bloc.dart';
 import 'package:expense_tracker_app/firebase_options.dart';
 import 'package:expense_tracker_app/notification_services.dart';
+import 'package:expense_tracker_app/repoitories/auth_repository.dart';
+import 'package:expense_tracker_app/repoitories/firebase_expense_repo.dart';
+import 'package:expense_tracker_app/screens/authentications/data/providers/authentication_firebase_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import 'screens/authentications/data/providers/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +38,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MyAppView();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthenticationBloc(
+              authenticationRepository: AuthenticationRepository(
+                  authenticationFirebaseProvider:
+                      AuthenticationFirebaseProvider(
+                          firebaseAuth: FirebaseAuth.instance),
+                  googleSignInProvider:
+                      GoogleSignInProvider(googleSignIn: GoogleSignIn()))),
+        ),
+        BlocProvider<GetExpensesBloc>(
+          create: (context) =>
+              GetExpensesBloc(FirebaseExpenseRepo())..add(GetExpenses()),
+        ),
+        BlocProvider<GetIncomeBloc>(
+          create: (context) =>
+              GetIncomeBloc(FirebaseExpenseRepo())..add(GetIncome()),
+        ),
+      ],
+      child: const MyAppView(),
+    );
   }
 }
