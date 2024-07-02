@@ -14,7 +14,8 @@ class CreateIncometypeBloc
     on<CreateIncometype>((event, emit) async {
       emit(CreateIncometypeLoading());
       try {
-        await expenseRepository.createIncomeType(event.incometype);
+        await expenseRepository.createEmptyIncomeTypes(
+            event.uid, event.incometype);
         emit(CreateIncometypeSuccess());
       } catch (e) {
         emit(CreateIncometypeFailure());

@@ -9,9 +9,10 @@ sealed class CreateIncomeEvent extends Equatable {
 
 class CreateIncome extends CreateIncomeEvent {
   final Income income;
+  final String uid;
 
-  const CreateIncome(this.income);
+  const CreateIncome(this.income, this.uid);
 
   @override
-  List<Object> get props => [income];
+  List<Object> get props => [income, uid];
 }

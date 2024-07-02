@@ -11,7 +11,8 @@ class CreateCategoryBloc
     on<CreateCategory>((event, emit) async {
       emit(CreateCategoryLoading());
       try {
-        await expenseRepository.createCategory(event.category);
+        await expenseRepository.createEmptyCategories(
+            event.uid, event.category);
         emit(CreateCategorySuccess());
       } catch (e) {
         emit(CreateCategoryFailure());

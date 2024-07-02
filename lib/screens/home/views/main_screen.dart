@@ -4,9 +4,8 @@ import 'package:expense_tracker_app/bloc/auth_bloc/auth_bloc_bloc.dart';
 import 'package:expense_tracker_app/models/expense.dart';
 import 'package:expense_tracker_app/models/income.dart';
 import 'package:expense_tracker_app/models/transaction.dart';
-import 'package:expense_tracker_app/screens/authentications/views/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -26,6 +25,28 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   String filter = 'View All';
+  late String userName;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  void fetchUserName() {
+    // Fetch the current user's display name from Firebase Authentication
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.displayName != null) {
+      setState(() {
+        userName = user.displayName!;
+      });
+    } else {
+      setState(() {
+        userName =
+            'Guest'; // Set a default name if user display name is not available
+      });
+    }
+  }
 
   double getTotalExpenses() {
     return widget.expenses.fold(0, (sum, item) => sum + item.amount);
@@ -86,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       Text(
-                        'Ashwini!',
+                        '$userName!',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -104,7 +125,6 @@ class _MainScreenState extends State<MainScreen> {
                       // Handle the selected option
                       switch (result) {
                         case 0:
-                          print('Log Out');
                           break;
                         // Add more cases as needed
                       }

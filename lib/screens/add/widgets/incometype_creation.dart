@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:uuid/uuid.dart';
 
-Future getIncomeTypeCreation(BuildContext context) {
+Future getIncomeTypeCreation(BuildContext context, String uid) {
   List<String> incomeTypeIcons = [
     'awards',
     'investment',
@@ -231,7 +231,7 @@ Future getIncomeTypeCreation(BuildContext context) {
 
                                     context
                                         .read<CreateIncometypeBloc>()
-                                        .add(CreateIncometype(incometype));
+                                        .add(CreateIncometype(incometype, uid));
                                   },
                                   child: const Text(
                                     'Done',

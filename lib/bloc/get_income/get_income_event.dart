@@ -7,4 +7,10 @@ sealed class GetIncomeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetIncome extends GetIncomeEvent {}
+class GetIncome extends GetIncomeEvent {
+  final String uid;
+
+  const GetIncome(this.uid);
+  @override
+  List<Object> get props => [uid];
+}

@@ -6,19 +6,21 @@ class Income {
   IncomeType incomeType;
   DateTime date;
   int amount;
+  String userId;
 
-  Income({
-    required this.incomeId,
-    required this.incomeType,
-    required this.date,
-    required this.amount,
-  });
+  Income(
+      {required this.incomeId,
+      required this.incomeType,
+      required this.date,
+      required this.amount,
+      required this.userId});
 
   static final empty = Income(
     incomeId: '',
     incomeType: IncomeType.empty,
     date: DateTime.now(),
     amount: 0,
+    userId: '',
   );
 
   IncomeEntity toEntity() {
@@ -27,6 +29,7 @@ class Income {
       incomeType: incomeType,
       date: date,
       amount: amount,
+      userId: userId,
     );
   }
 
@@ -36,6 +39,7 @@ class Income {
       incomeType: entity.incomeType,
       date: entity.date,
       amount: entity.amount,
+      userId: entity.userId,
     );
   }
 

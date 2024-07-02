@@ -6,19 +6,21 @@ class Expense {
   Category category;
   DateTime date;
   int amount;
+  String userId;
 
-  Expense({
-    required this.expenseId,
-    required this.category,
-    required this.date,
-    required this.amount,
-  });
+  Expense(
+      {required this.expenseId,
+      required this.category,
+      required this.date,
+      required this.amount,
+      required this.userId});
 
   static final empty = Expense(
     expenseId: '',
     category: Category.empty,
     date: DateTime.now(),
     amount: 0,
+    userId: '',
   );
 
   ExpenseEntity toEntity() {
@@ -27,6 +29,7 @@ class Expense {
       category: category,
       date: date,
       amount: amount,
+      userId: userId,
     );
   }
 
@@ -36,6 +39,7 @@ class Expense {
       category: entity.category,
       date: entity.date,
       amount: entity.amount,
+      userId: entity.userId,
     );
   }
 

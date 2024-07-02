@@ -3,6 +3,7 @@ import 'package:expense_tracker_app/bloc/get_incometype/get_incometype_bloc.dart
 import 'package:expense_tracker_app/models/income.dart';
 import 'package:expense_tracker_app/models/incometype.dart';
 import 'package:expense_tracker_app/screens/add/widgets/incometype_creation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,6 +27,10 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
 
   @override
   void initState() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      context.read<GetIncometypeBloc>().add(GetIncometype(uid));
+    }
     incomeDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     income = Income.empty;
     income.incomeId = const Uuid().v1();
@@ -34,6 +39,11 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (uid == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return BlocListener<CreateIncomeBloc, CreateIncomeState>(
       listener: (context, state) {
         if (state is CreateIncomeSuccess) {
@@ -112,11 +122,12 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                                     ),
                                     onPressed: () async {
                                       var newIncometype =
-                                          await getIncomeTypeCreation(context);
+                                          await getIncomeTypeCreation(
+                                              context, uid);
                                       setState(() {
                                         context
                                             .read<GetIncometypeBloc>()
-                                            .add(GetIncometype());
+                                            .add(GetIncometype(uid));
                                         state.incometype
                                             .insert(0, newIncometype);
                                         isExpanded = !isExpanded;
@@ -231,7 +242,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
                                           });
                                           context
                                               .read<CreateIncomeBloc>()
-                                              .add(CreateIncome(income));
+                                              .add(CreateIncome(income, uid));
                                         },
                                         child: const Text(
                                           'Save Income',

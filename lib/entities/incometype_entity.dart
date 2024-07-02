@@ -1,25 +1,27 @@
 class IncomeTypeEntity {
   String incomeTypeId;
   String name;
-  int totalExpenses;
+  int totalIncome;
   String icon;
   int color;
+  String userId;
 
-  IncomeTypeEntity({
-    required this.incomeTypeId,
-    required this.name,
-    required this.totalExpenses,
-    required this.icon,
-    required this.color,
-  });
+  IncomeTypeEntity(
+      {required this.incomeTypeId,
+      required this.name,
+      required this.totalIncome,
+      required this.icon,
+      required this.color,
+      required this.userId});
 
   Map<String, Object?> toDocument() {
     return {
       'incomeTypeId': incomeTypeId,
       'name': name,
-      'totalExpenses': totalExpenses,
+      'totalIncome': totalIncome,
       'icon': icon,
       'color': color,
+      'userId': userId
     };
   }
 
@@ -27,9 +29,10 @@ class IncomeTypeEntity {
     return IncomeTypeEntity(
       incomeTypeId: doc['incomeTypeId'],
       name: doc['name'],
-      totalExpenses: doc['totalExpenses'],
+      totalIncome: doc['totalIncome'],
       icon: doc['icon'],
       color: doc['color'],
+      userId: doc['userId'],
     );
   }
 }

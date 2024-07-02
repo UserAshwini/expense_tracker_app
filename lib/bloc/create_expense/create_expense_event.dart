@@ -10,9 +10,10 @@ sealed class CreateExpenseEvent extends Equatable {
 
 class CreateExpense extends CreateExpenseEvent {
   final Expense expense;
+  final String uid;
 
-  const CreateExpense(this.expense);
+  const CreateExpense(this.expense, this.uid);
 
   @override
-  List<Object> get props => [expense];
+  List<Object> get props => [expense, uid];
 }

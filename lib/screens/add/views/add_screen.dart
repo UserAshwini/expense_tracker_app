@@ -31,7 +31,7 @@ class _AddScreenState extends State<AddScreen> {
                 radiusStyle: true,
                 cornerRadius: 20.0,
                 activeFgColor: Colors.white,
-                inactiveBgColor: Colors.grey,
+                inactiveBgColor: const Color.fromARGB(255, 180, 179, 179),
                 inactiveFgColor: Colors.white,
                 totalSwitches: 2,
                 labels: const ['Add Income', 'Add Expense'],
