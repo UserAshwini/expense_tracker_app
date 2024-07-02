@@ -1,8 +1,5 @@
 import 'package:expense_tracker_app/app_view.dart';
 import 'package:expense_tracker_app/bloc/auth_bloc/auth_bloc_bloc.dart';
-import 'package:expense_tracker_app/bloc/get_expense/get_expense_bloc.dart';
-import 'package:expense_tracker_app/bloc/get_expense/get_expense_event.dart';
-import 'package:expense_tracker_app/bloc/get_income/get_income_bloc.dart';
 import 'package:expense_tracker_app/firebase_options.dart';
 import 'package:expense_tracker_app/notification_services.dart';
 import 'package:expense_tracker_app/repoitories/auth_repository.dart';
@@ -47,16 +44,17 @@ class MyApp extends StatelessWidget {
                       AuthenticationFirebaseProvider(
                           firebaseAuth: FirebaseAuth.instance),
                   googleSignInProvider:
-                      GoogleSignInProvider(googleSignIn: GoogleSignIn()))),
+                      GoogleSignInProvider(googleSignIn: GoogleSignIn()),
+                  firebaseExpenseRepo: FirebaseExpenseRepo())),
         ),
-        BlocProvider<GetExpensesBloc>(
-          create: (context) =>
-              GetExpensesBloc(FirebaseExpenseRepo())..add(GetExpenses()),
-        ),
-        BlocProvider<GetIncomeBloc>(
-          create: (context) =>
-              GetIncomeBloc(FirebaseExpenseRepo())..add(GetIncome()),
-        ),
+        // BlocProvider<GetExpensesBloc>(
+        //   create: (context) =>
+        //       GetExpensesBloc(FirebaseExpenseRepo())..add(GetExpenses()),
+        // ),
+        // BlocProvider<GetIncomeBloc>(
+        //   create: (context) =>
+        //       GetIncomeBloc(FirebaseExpenseRepo())..add(GetIncome()),
+        // ),
       ],
       child: const MyAppView(),
     );

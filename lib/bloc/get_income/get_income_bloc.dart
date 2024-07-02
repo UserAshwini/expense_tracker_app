@@ -12,8 +12,8 @@ class GetIncomeBloc extends Bloc<GetIncomeEvent, GetIncomeState> {
     on<GetIncome>((event, emit) async {
       emit(GetIncomeLoading());
       try {
-        List<Income> expenses = await expenseRepository.getIncome();
-        emit(GetIncomeSuccess(expenses));
+        List<Income> income = await expenseRepository.getIncomes(event.uid);
+        emit(GetIncomeSuccess(income));
       } catch (e) {
         emit(GetIncomeFailure());
       }

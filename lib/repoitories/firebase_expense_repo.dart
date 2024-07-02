@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker_app/entities/category_entity.dart';
 import 'package:expense_tracker_app/entities/expense_entity.dart';
@@ -12,107 +10,195 @@ import 'package:expense_tracker_app/models/incometype.dart';
 import 'package:expense_tracker_app/repoitories/expense_repo.dart';
 
 class FirebaseExpenseRepo implements ExpenseRepository {
-  final categoryCollection =
-      FirebaseFirestore.instance.collection('categories');
-  final expenseCollection = FirebaseFirestore.instance.collection('expenses');
-  final incometypeCollection =
-      FirebaseFirestore.instance.collection('incometype');
-  final incomeCollection = FirebaseFirestore.instance.collection('income');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> createCategory(Category category) async {
+  Future<void> createEmptyCategories(String userId, Category category) async {
     try {
-      await categoryCollection
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('categories')
           .doc(category.categoryId)
           .set(category.toEntity().toDocument());
     } catch (e) {
-      log("error create category $e");
-      return;
-    }
-  }
-
-  @override
-  Future<List<Category>> getCategory() async {
-    try {
-      return await categoryCollection.get().then((value) => value.docs
-          .map(
-              (e) => Category.fromEntity(CategoryEntity.fromDocument(e.data())))
-          .toList());
-    } catch (e) {
-      log("error get category $e");
+      print("Error creating empty categories: $e");
       rethrow;
     }
   }
 
   @override
-  Future<void> createExpense(Expense expense) async {
+  Future<void> createEmptyExpenses(String userId, Expense expense) async {
     try {
-      await expenseCollection
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
           .doc(expense.expenseId)
           .set(expense.toEntity().toDocument());
     } catch (e) {
-      log("error create expense $e");
+      print("Error creating empty expenses: $e");
       rethrow;
     }
   }
 
   @override
-  Future<List<Expense>> getExpenses() async {
+  Future<void> createEmptyIncomeTypes(
+      String userId, IncomeType incometype) async {
     try {
-      return await expenseCollection.get().then((value) => value.docs
-          .map((e) => Expense.fromEntity(ExpenseEntity.fromDocument(e.data())))
-          .toList());
-    } catch (e) {
-      log("error get expense $e");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<void> createIncome(Income income) async {
-    try {
-      await incomeCollection
-          .doc(income.incomeId)
-          .set(income.toEntity().toDocument());
-    } catch (e) {
-      log("error create expense $e");
-      rethrow;
-    }
-  }
-
-  @override
-  Future<void> createIncomeType(IncomeType incometype) async {
-    try {
-      await incometypeCollection
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('incomeTypes')
           .doc(incometype.incomeTypeId)
           .set(incometype.toEntity().toDocument());
     } catch (e) {
-      log("error create incometype $e");
-      return;
-    }
-  }
-
-  @override
-  Future<List<Income>> getIncome() async {
-    try {
-      return await incomeCollection.get().then((value) => value.docs
-          .map((e) => Income.fromEntity(IncomeEntity.fromDocument(e.data())))
-          .toList());
-    } catch (e) {
-      log("error get income $e");
+      print("Error creating empty income types: $e");
       rethrow;
     }
   }
 
   @override
-  Future<List<IncomeType>> getIncomeType() async {
+  Future<void> createEmptyIncomes(String userId, Income income) async {
     try {
-      return await incometypeCollection.get().then((value) => value.docs
-          .map((e) =>
-              IncomeType.fromEntity(IncomeTypeEntity.fromDocument(e.data())))
-          .toList());
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('incomes')
+          .doc(income.incomeId)
+          .set(income.toEntity().toDocument());
     } catch (e) {
-      log("error get incometype $e");
+      print("Error creating empty incomes: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Category>> getCategories(String userId) async {
+    try {
+      var snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('categories')
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return [];
+      }
+
+      List<Category> categories = snapshot.docs
+          .map((category) =>
+              Category.fromEntity(CategoryEntity.fromDocument(category.data())))
+          .toList();
+
+      return categories;
+    } catch (e) {
+      print("Error getting categories: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Expense>> getExpenses(String userId) async {
+    try {
+      var snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return [];
+      }
+
+      List<Expense> expenses = snapshot.docs
+          .map((expense) =>
+              Expense.fromEntity(ExpenseEntity.fromDocument(expense.data())))
+          .toList();
+
+      return expenses;
+    } catch (e) {
+      print("Error getting expenses: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<IncomeType>> getIncomeTypes(String userId) async {
+    try {
+      var snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('incomeTypes')
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return [];
+      }
+
+      List<IncomeType> incomeTypes = snapshot.docs
+          .map((incomeType) => IncomeType.fromEntity(
+              IncomeTypeEntity.fromDocument(incomeType.data())))
+          .toList();
+
+      return incomeTypes;
+    } catch (e) {
+      print("Error getting income types: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Income>> getIncomes(String userId) async {
+    try {
+      var snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('incomes')
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return [];
+      }
+
+      List<Income> incomes = snapshot.docs
+          .map((income) =>
+              Income.fromEntity(IncomeEntity.fromDocument(income.data())))
+          .toList();
+
+      return incomes;
+    } catch (e) {
+      print("Error getting incomes: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteCategory(String categoryId, String uid) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('categories')
+          .doc(categoryId)
+          .delete();
+    } catch (e) {
+      print("Error deleting category: $e");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateCategory(Category category, String uid) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('categories')
+          .doc(category.categoryId)
+          .update(category.toEntity().toDocument());
+    } catch (e) {
+      print("Error updating category: $e");
       rethrow;
     }
   }

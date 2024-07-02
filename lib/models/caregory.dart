@@ -6,14 +6,15 @@ class Category {
   int totalExpenses;
   String icon;
   int color;
+  String userId;
 
-  Category({
-    required this.categoryId,
-    required this.name,
-    required this.totalExpenses,
-    required this.icon,
-    required this.color,
-  });
+  Category(
+      {required this.categoryId,
+      required this.name,
+      required this.totalExpenses,
+      required this.icon,
+      required this.color,
+      required this.userId});
 
   static final empty = Category(
     categoryId: '',
@@ -21,6 +22,7 @@ class Category {
     totalExpenses: 0,
     icon: '',
     color: 0,
+    userId: '',
   );
 
   CategoryEntity toEntity() {
@@ -30,6 +32,7 @@ class Category {
       totalExpenses: totalExpenses,
       icon: icon,
       color: color,
+      userId: userId,
     );
   }
 
@@ -40,6 +43,7 @@ class Category {
       totalExpenses: entity.totalExpenses,
       icon: entity.icon,
       color: entity.color,
+      userId: entity.userId,
     );
   }
 

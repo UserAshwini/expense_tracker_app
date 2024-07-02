@@ -8,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:uuid/uuid.dart';
 
-Future getCategoryCreation(BuildContext context) {
+Future getCategoryCreation(BuildContext context, String uid,
+    {Category? category}) {
   List<String> myCategoriesIcons = [
     'entertainment',
     'food',
@@ -18,17 +19,25 @@ Future getCategoryCreation(BuildContext context) {
     'tech',
     'travel'
   ];
+  bool isEditing = category != null;
+  TextEditingController categoryNameController = TextEditingController();
+  TextEditingController categoryIconController = TextEditingController();
+  TextEditingController categoryColorController = TextEditingController();
+  Color categoryColor = Colors.white;
+
+  if (isEditing) {
+    categoryNameController.text = category.name;
+    categoryIconController.text = category.icon;
+    categoryColor = Color(category.color ?? Colors.white.value);
+  }
+  Category newCategory = category ?? Category.empty;
   return showDialog(
       context: context,
       builder: (ctx) {
         bool isExpanded = false;
-        String iconSelected = '';
-        Color categoryColor = Colors.white;
-        TextEditingController categoryNameController = TextEditingController();
-        TextEditingController categoryIconController = TextEditingController();
-        TextEditingController categoryColorController = TextEditingController();
+        String iconSelected = isEditing ? category.icon : '';
+        Color categoryColor = isEditing ? Color(category.color) : Colors.white;
         bool isLoading = false;
-        Category category = Category.empty;
 
         return BlocProvider.value(
           value: context.read<CreateCategoryBloc>(),
@@ -36,7 +45,7 @@ Future getCategoryCreation(BuildContext context) {
             return BlocListener<CreateCategoryBloc, CreateCategoryState>(
               listener: (context, state) {
                 if (state is CreateCategorySuccess) {
-                  Navigator.pop(ctx, category);
+                  Navigator.pop(ctx, newCategory);
                 } else if (state is CreateCategoryLoading) {
                   setState(() {
                     isLoading = true;
@@ -221,16 +230,17 @@ Future getCategoryCreation(BuildContext context) {
                                               BorderRadius.circular(12))),
                                   onPressed: () {
                                     setState(() {
-                                      category.categoryId = const Uuid().v1();
-                                      category.name =
+                                      newCategory.categoryId =
+                                          const Uuid().v1();
+                                      newCategory.name =
                                           categoryNameController.text;
-                                      category.icon = iconSelected;
-                                      category.color = categoryColor.value;
+                                      newCategory.icon = iconSelected;
+                                      newCategory.color = categoryColor.value;
                                     });
 
                                     context
                                         .read<CreateCategoryBloc>()
-                                        .add(CreateCategory(category));
+                                        .add(CreateCategory(newCategory, uid));
                                   },
                                   child: const Text(
                                     'Done',

@@ -63,114 +63,131 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (state is AuthBlocLoading) {
           return CircularProgressIndicator();
         } else if (state is AuthBlocSuccess) {
-          return BlocBuilder<GetIncomeBloc, GetIncomeState>(
-            builder: (context, incomeState) {
-              return BlocBuilder<GetExpensesBloc, GetExpensesState>(
-                  builder: (context, expenseState) {
-                if (expenseState is GetExpensesSuccess &&
-                    incomeState is GetIncomeSuccess) {
-                  return Scaffold(
-                      bottomNavigationBar: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(30)),
-                        child: BottomNavigationBar(
-                            onTap: (value) {
-                              setState(() {
-                                index = value;
-                              });
-                            },
-                            showSelectedLabels: false,
-                            showUnselectedLabels: false,
-                            elevation: 3,
-                            items: [
-                              BottomNavigationBarItem(
-                                  icon: Icon(Icons.home,
-                                      color: index == 0
-                                          ? selectedItem
-                                          : unselectedItem),
-                                  label: 'Home'),
-                              BottomNavigationBarItem(
-                                  icon: Icon(Icons.graphic_eq_rounded,
-                                      color: index == 1
-                                          ? selectedItem
-                                          : unselectedItem),
-                                  label: 'Stats')
-                            ]),
-                      ),
-                      floatingActionButtonLocation:
-                          FloatingActionButtonLocation.centerDocked,
-                      floatingActionButton: FloatingActionButton(
-                        onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  MultiBlocProvider(
-                                providers: [
-                                  BlocProvider(
-                                      create: (context) => CreateCategoryBloc(
-                                          FirebaseExpenseRepo())),
-                                  BlocProvider(
-                                      create: (context) => GetCategoriesBloc(
-                                          FirebaseExpenseRepo())
-                                        ..add(GetCategories())),
-                                  BlocProvider(
-                                      create: (context) => CreateExpenseBloc(
-                                          FirebaseExpenseRepo())),
-                                  BlocProvider(
-                                      create: (context) => CreateIncometypeBloc(
-                                          FirebaseExpenseRepo())),
-                                  BlocProvider(
-                                      create: (context) => GetIncometypeBloc(
-                                          FirebaseExpenseRepo())
-                                        ..add(GetIncometype())),
-                                  BlocProvider(
-                                      create: (context) => CreateIncomeBloc(
-                                          FirebaseExpenseRepo())),
-                                ],
-                                child: const AddScreen(),
-                              ),
-                            ),
-                          );
+          final uid = state.authModel.uid!;
 
-                          if (result is Income) {
-                            context.read<GetIncomeBloc>().add(GetIncome());
-                          } else if (result is Expense) {
-                            context.read<GetExpensesBloc>().add(GetExpenses());
-                          }
-                        },
-                        shape: const CircleBorder(),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context).colorScheme.tertiary,
-                                  Theme.of(context).colorScheme.secondary,
-                                  Theme.of(context).colorScheme.primary,
-                                ],
-                                transform: const GradientRotation(pi / 4),
-                              )),
-                          child: const Icon(Icons.add),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<GetExpensesBloc>(
+                create: (context) => GetExpensesBloc(FirebaseExpenseRepo())
+                  ..add(GetExpenses(uid)),
+              ),
+              BlocProvider<GetIncomeBloc>(
+                create: (context) =>
+                    GetIncomeBloc(FirebaseExpenseRepo())..add(GetIncome(uid)),
+              ),
+            ],
+            child: BlocBuilder<GetIncomeBloc, GetIncomeState>(
+              builder: (context, incomeState) {
+                return BlocBuilder<GetExpensesBloc, GetExpensesState>(
+                    builder: (context, expenseState) {
+                  if (expenseState is GetExpensesSuccess &&
+                      incomeState is GetIncomeSuccess) {
+                    return Scaffold(
+                        bottomNavigationBar: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(30)),
+                          child: BottomNavigationBar(
+                              onTap: (value) {
+                                setState(() {
+                                  index = value;
+                                });
+                              },
+                              showSelectedLabels: false,
+                              showUnselectedLabels: false,
+                              elevation: 3,
+                              items: [
+                                BottomNavigationBarItem(
+                                    icon: Icon(Icons.home,
+                                        color: index == 0
+                                            ? selectedItem
+                                            : unselectedItem),
+                                    label: 'Home'),
+                                BottomNavigationBarItem(
+                                    icon: Icon(Icons.graphic_eq_rounded,
+                                        color: index == 1
+                                            ? selectedItem
+                                            : unselectedItem),
+                                    label: 'Stats')
+                              ]),
                         ),
+                        floatingActionButtonLocation:
+                            FloatingActionButtonLocation.centerDocked,
+                        floatingActionButton: FloatingActionButton(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                        create: (context) => CreateCategoryBloc(
+                                            FirebaseExpenseRepo())),
+                                    BlocProvider(
+                                        create: (context) => GetCategoriesBloc(
+                                            FirebaseExpenseRepo())
+                                          ..add(GetCategories(uid))),
+                                    BlocProvider(
+                                        create: (context) => CreateExpenseBloc(
+                                            FirebaseExpenseRepo())),
+                                    BlocProvider(
+                                        create: (context) =>
+                                            CreateIncometypeBloc(
+                                                FirebaseExpenseRepo())),
+                                    BlocProvider(
+                                        create: (context) => GetIncometypeBloc(
+                                            FirebaseExpenseRepo())
+                                          ..add(GetIncometype(uid))),
+                                    BlocProvider(
+                                        create: (context) => CreateIncomeBloc(
+                                            FirebaseExpenseRepo())),
+                                  ],
+                                  child: const AddScreen(),
+                                ),
+                              ),
+                            );
+
+                            if (result is Income) {
+                              context.read<GetIncomeBloc>().add(GetIncome(uid));
+                            } else if (result is Expense) {
+                              context
+                                  .read<GetExpensesBloc>()
+                                  .add(GetExpenses(uid));
+                            }
+                          },
+                          shape: const CircleBorder(),
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Theme.of(context).colorScheme.tertiary,
+                                    Theme.of(context).colorScheme.secondary,
+                                    Theme.of(context).colorScheme.primary,
+                                  ],
+                                  transform: const GradientRotation(pi / 4),
+                                )),
+                            child: const Icon(Icons.add),
+                          ),
+                        ),
+                        body: index == 0
+                            ? MainScreen(
+                                income: incomeState.income,
+                                expenses: expenseState.expenses,
+                              )
+                            : const StatsScreen());
+                  } else {
+                    return const Scaffold(
+                      body: Center(
+                        child: CircularProgressIndicator(),
                       ),
-                      body: index == 0
-                          ? MainScreen(
-                              income: incomeState.income,
-                              expenses: expenseState.expenses,
-                            )
-                          : const StatsScreen());
-                } else {
-                  return const Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              });
-            },
+                    );
+                  }
+                });
+              },
+            ),
           );
         } else {
           return const Scaffold(

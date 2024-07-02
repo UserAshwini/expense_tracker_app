@@ -3,33 +3,36 @@ import 'package:expense_tracker_app/entities/incometype_entity.dart';
 class IncomeType {
   String incomeTypeId;
   String name;
-  int totalExpenses;
+  int totalIncome;
   String icon;
   int color;
+  String userId;
 
-  IncomeType({
-    required this.incomeTypeId,
-    required this.name,
-    required this.totalExpenses,
-    required this.icon,
-    required this.color,
-  });
+  IncomeType(
+      {required this.incomeTypeId,
+      required this.name,
+      required this.totalIncome,
+      required this.icon,
+      required this.color,
+      required this.userId});
 
   static final empty = IncomeType(
     incomeTypeId: '',
     name: '',
-    totalExpenses: 0,
+    totalIncome: 0,
     icon: '',
     color: 0,
+    userId: '',
   );
 
   IncomeTypeEntity toEntity() {
     return IncomeTypeEntity(
       incomeTypeId: incomeTypeId,
       name: name,
-      totalExpenses: totalExpenses,
+      totalIncome: totalIncome,
       icon: icon,
       color: color,
+      userId: userId,
     );
   }
 
@@ -37,9 +40,10 @@ class IncomeType {
     return IncomeType(
       incomeTypeId: entity.incomeTypeId,
       name: entity.name,
-      totalExpenses: entity.totalExpenses,
+      totalIncome: entity.totalIncome,
       icon: entity.icon,
       color: entity.color,
+      userId: entity.userId,
     );
   }
 
